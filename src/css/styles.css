@@ -623,3 +623,222 @@ header p {
     font-size: 1.3rem;
   }
 }
+
+/* ============================================
+   RECORDING PANEL STYLES
+   ============================================ */
+
+.recording-section {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 180, 216, 0.05);
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.record-status {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  transition: color 0.3s;
+}
+
+.record-status.recording {
+  color: #ff6b6b;
+  animation: pulse 1s infinite;
+}
+
+.record-timer {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-family: 'JetBrains Mono', monospace;
+  margin: 15px 0;
+}
+
+.record-controls {
+  margin: 20px 0;
+}
+
+.record-btn {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--deep-blue));
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+}
+
+.record-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+}
+
+.record-btn.recording {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  animation: pulse-btn 1.5s infinite;
+}
+
+@keyframes pulse-btn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.record-icon {
+  font-size: 1.2rem;
+}
+
+.record-visualizer {
+  height: 40px;
+  margin-top: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.transcription-section,
+.save-button-section {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.transcription-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.transcription-section textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+/* ============================================
+   ENHANCED HISTORY STYLES
+   ============================================ */
+
+.history-settings {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 10px;
+}
+
+.toggle-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.history-item.enhanced {
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.history-item.enhanced:hover {
+  border-color: var(--accent-primary);
+  background: rgba(0, 180, 216, 0.05);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-caller {
+  font-weight: 600;
+  color: var(--accent-secondary);
+  font-size: 0.9rem;
+}
+
+.history-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.history-text {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.history-duration {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.history-summary {
+  font-size: 0.8rem;
+  color: var(--accent-warm);
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 180, 216, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* ============================================
+   SMART FEATURES MODAL STYLES
+   ============================================ */
+
+.coming-soon {
+  opacity: 0.7;
+  position: relative;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--accent-warm);
+  color: var(--bg-primary);
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.ai-assistant-preview {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(0, 180, 216, 0.05);
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.ai-icon-preview {
+  flex-shrink: 0;
+}
+
+.ai-assistant-preview p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}

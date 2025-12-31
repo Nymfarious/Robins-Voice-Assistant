@@ -1,4 +1,4 @@
-/* Juniper v6.2.1 - Modal Styles */
+/* Robin's Voice v1.1.0 - Modal Styles */
 
 /* Modal Overlay */
 .modal-overlay {
@@ -14,7 +14,8 @@
   padding: 15px;
 }
 
-.modal-overlay.show {
+.modal-overlay.show,
+.modal-overlay.active {
   display: block;
 }
 

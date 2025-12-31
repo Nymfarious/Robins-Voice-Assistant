@@ -1,10 +1,10 @@
-// Robin v6.2.1 - User Info Helpers
+// Robin's Voice v1.1.0 - User Info Helpers
 
 // ============================================
 // NAME HELPERS
 // ============================================
 function getFirstName() {
-  return state.info.pronounceFirst || state.info.firstName || 'the caller';
+  return state.info.pronounceFirst || state.info.firstName || 'Robin';
 }
 
 function getLastName() {
@@ -14,12 +14,12 @@ function getLastName() {
 function getFullName() {
   const first = state.info.pronounceFirst || state.info.firstName || '';
   const last = state.info.pronounceLast || state.info.lastName || '';
-  return (first + ' ' + last).trim() || 'the caller';
+  return (first + ' ' + last).trim() || 'Robin';
 }
 
 function getDisplayName() {
   return state.info.pronounceNick || state.info.nickname || 
-         state.info.pronounceFirst || state.info.firstName || 'the caller';
+         state.info.pronounceFirst || state.info.firstName || 'Robin';
 }
 
 function getFullAddress() {
@@ -63,7 +63,7 @@ function replacePlaceholders(text) {
 function updateHeaderName() {
   const name = state.info.nickname || state.info.firstName || '';
   document.getElementById('headerSubtitle').textContent = 
-    name ? name + "'s AI Voice Assistant" : "Your AI Voice Assistant";
+    name ? name + "'s Voice Assistant" : "Your Voice Assistant";
 }
 
 function updateBtnLabels() {
@@ -75,36 +75,42 @@ function updateBtnLabels() {
 // LOAD/SAVE INFO
 // ============================================
 function loadInfoFields() {
-  document.getElementById('infoFirstName').value = state.info.firstName || '';
-  document.getElementById('infoLastName').value = state.info.lastName || '';
-  document.getElementById('infoNickname').value = state.info.nickname || '';
-  document.getElementById('infoPronounceFirst').value = state.info.pronounceFirst || '';
-  document.getElementById('infoPronounceLast').value = state.info.pronounceLast || '';
-  document.getElementById('infoPronounceNick').value = state.info.pronounceNick || '';
-  document.getElementById('infoDOB').value = state.info.dob || '';
-  document.getElementById('infoPhone').value = state.info.phone || '';
-  document.getElementById('infoAddress1').value = state.info.address1 || '';
-  document.getElementById('infoAddress2').value = state.info.address2 || '';
-  document.getElementById('infoCity').value = state.info.city || '';
-  document.getElementById('infoState').value = state.info.state || '';
-  document.getElementById('infoZip').value = state.info.zip || '';
+  document.getElementById('firstName').value = state.info.firstName || '';
+  document.getElementById('lastName').value = state.info.lastName || '';
+  document.getElementById('nickname').value = state.info.nickname || '';
+  document.getElementById('pronounceFirst').value = state.info.pronounceFirst || '';
+  document.getElementById('pronounceLast').value = state.info.pronounceLast || '';
+  document.getElementById('dob').value = state.info.dob || '';
+  document.getElementById('phone').value = state.info.phone || '';
+  document.getElementById('address1').value = state.info.address1 || '';
+  document.getElementById('address2').value = state.info.address2 || '';
+  document.getElementById('city').value = state.info.city || '';
+  document.getElementById('state').value = state.info.state || '';
+  document.getElementById('zip').value = state.info.zip || '';
+  
+  // Load Twilio status
+  if (localStorage.getItem('robinTwilioSid')) {
+    document.getElementById('twilioSid').value = '••••••••';
+    document.getElementById('twilioToken').value = '••••••••';
+    document.getElementById('twilioStatus').textContent = '✓ Saved';
+    document.getElementById('twilioStatus').className = 'key-status saved';
+  }
 }
 
 function autoSaveInfo() {
   state.info = {
-    firstName: document.getElementById('infoFirstName').value.trim(),
-    lastName: document.getElementById('infoLastName').value.trim(),
-    nickname: document.getElementById('infoNickname').value.trim(),
-    pronounceFirst: document.getElementById('infoPronounceFirst').value.trim(),
-    pronounceLast: document.getElementById('infoPronounceLast').value.trim(),
-    pronounceNick: document.getElementById('infoPronounceNick').value.trim(),
-    dob: document.getElementById('infoDOB').value.trim(),
-    phone: document.getElementById('infoPhone').value.trim(),
-    address1: document.getElementById('infoAddress1').value.trim(),
-    address2: document.getElementById('infoAddress2').value.trim(),
-    city: document.getElementById('infoCity').value.trim(),
-    state: document.getElementById('infoState').value.trim(),
-    zip: document.getElementById('infoZip').value.trim()
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName: document.getElementById('lastName').value.trim(),
+    nickname: document.getElementById('nickname').value.trim(),
+    pronounceFirst: document.getElementById('pronounceFirst').value.trim(),
+    pronounceLast: document.getElementById('pronounceLast').value.trim(),
+    dob: document.getElementById('dob').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    address1: document.getElementById('address1').value.trim(),
+    address2: document.getElementById('address2').value.trim(),
+    city: document.getElementById('city').value.trim(),
+    state: document.getElementById('state').value.trim(),
+    zip: document.getElementById('zip').value.trim()
   };
   localStorage.setItem('robinInfo', JSON.stringify(state.info));
   updateHeaderName();
@@ -112,7 +118,10 @@ function autoSaveInfo() {
 
 function saveInfo() {
   autoSaveInfo();
-  setStatus('ready', 'Saved!');
+  document.getElementById('statusText').textContent = '✓ Saved!';
+  setTimeout(() => {
+    document.getElementById('statusText').textContent = 'Ready';
+  }, 2000);
 }
 
 // ============================================
@@ -123,7 +132,7 @@ function saveApiKey() {
   if (k && !k.includes('•')) {
     state.apiKey = k;
     localStorage.setItem('robinApiKey', k);
-    document.getElementById('apiKey').value = '••••••';
+    document.getElementById('apiKey').value = '••••••••••••';
     document.getElementById('keyStatus').textContent = '✓ Saved';
     document.getElementById('keyStatus').className = 'key-status saved';
     loadVoices();
@@ -135,8 +144,27 @@ function saveClaudeKey() {
   if (k && !k.includes('•')) {
     state.claudeKey = k;
     localStorage.setItem('robinClaudeKey', k);
-    document.getElementById('claudeKey').value = '••••••';
+    document.getElementById('claudeKey').value = '••••••••••••';
     document.getElementById('claudeStatus').textContent = '✓ Saved';
     document.getElementById('claudeStatus').className = 'key-status saved';
   }
+}
+
+function saveTwilioKeys() {
+  const sid = document.getElementById('twilioSid').value.trim();
+  const token = document.getElementById('twilioToken').value.trim();
+  
+  if (sid && !sid.includes('•')) {
+    localStorage.setItem('robinTwilioSid', sid);
+    TWILIO_CONFIG.accountSid = sid;
+  }
+  if (token && !token.includes('•')) {
+    localStorage.setItem('robinTwilioToken', token);
+    TWILIO_CONFIG.authToken = token;
+  }
+  
+  document.getElementById('twilioSid').value = '••••••••';
+  document.getElementById('twilioToken').value = '••••••••';
+  document.getElementById('twilioStatus').textContent = '✓ Saved';
+  document.getElementById('twilioStatus').className = 'key-status saved';
 }

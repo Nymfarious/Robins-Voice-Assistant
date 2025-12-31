@@ -8,7 +8,6 @@
   
   <!-- Lotus Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='50' cy='70' rx='20' ry='8' fill='%23c9e4ca'/%3E%3Cpath d='M50 65 Q30 50 35 30 Q50 45 50 65' fill='%23f4a5b8'/%3E%3Cpath d='M50 65 Q70 50 65 30 Q50 45 50 65' fill='%23f4a5b8'/%3E%3Cpath d='M50 60 Q25 55 20 35 Q45 45 50 60' fill='%23ee8a9e'/%3E%3Cpath d='M50 60 Q75 55 80 35 Q55 45 50 60' fill='%23ee8a9e'/%3E%3Cpath d='M50 55 Q20 45 15 25 Q42 40 50 55' fill='%23e87591'/%3E%3Cpath d='M50 55 Q80 45 85 25 Q58 40 50 55' fill='%23e87591'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23f7d84a'/%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cellipse cx='50' cy='70' rx='20' ry='8' fill='%23c9e4ca'/%3E%3Cpath d='M50 65 Q30 50 35 30 Q50 45 50 65' fill='%23f4a5b8'/%3E%3Cpath d='M50 65 Q70 50 65 30 Q50 45 50 65' fill='%23f4a5b8'/%3E%3Cpath d='M50 60 Q25 55 20 35 Q45 45 50 60' fill='%23ee8a9e'/%3E%3Cpath d='M50 60 Q75 55 80 35 Q55 45 50 60' fill='%23ee8a9e'/%3E%3Cpath d='M50 55 Q20 45 15 25 Q42 40 50 55' fill='%23e87591'/%3E%3Cpath d='M50 55 Q80 45 85 25 Q58 40 50 55' fill='%23e87591'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23f7d84a'/%3E%3C/svg%3E">
   
   <!-- Stylesheets -->
   <link rel="stylesheet" href="src/css/styles.css">
@@ -22,7 +21,7 @@
     <header>
       <h1><div class="lotus-icon">🪷</div> Robin's Voice</h1>
       <p id="headerSubtitle">Your Voice Assistant</p>
-      <div class="version">v1.0.1</div>
+      <div class="version">v1.1.0</div>
     </header>
 
     <!-- Type Anything Card -->
@@ -98,8 +97,8 @@
       <div class="quick-scripts" id="quickScripts"></div>
       <div class="toolbar">
         <button class="toolbar-btn" onclick="openFullScriptsModal()" title="Full call scripts"><span class="tb-icon">📜</span>Scripts</button>
-        <button class="toolbar-btn" onclick="openAgentsModal()" title="Smart features"><span class="tb-icon">🤖</span>Smart</button>
-        <button class="toolbar-btn" onclick="openVoiceModal()" title="Voice settings"><span class="tb-icon">🎤</span>Voice</button>
+        <button class="toolbar-btn" onclick="openRecordingModal()" title="Record & create button"><span class="tb-icon">🎙️</span>Record</button>
+        <button class="toolbar-btn" onclick="openSmartModal()" title="Smart features"><span class="tb-icon">🧠</span>Smart</button>
         <button class="toolbar-btn" onclick="openInfoModal()" title="Your information"><span class="tb-icon">⚙️</span>Info</button>
       </div>
     </div>
@@ -118,22 +117,209 @@
       </div>
     </div>
 
-    <!-- History Card -->
+    <!-- Call History Card (Enhanced) -->
     <div class="card">
       <div class="collapse-header" onclick="toggleCollapse('history')">
-        <h2 style="margin:0;flex:1;">📜 History</h2>
-        <button class="clear-btn" onclick="event.stopPropagation();clearHistory()" title="Clear">Clear</button>
-        <span class="arrow" style="margin-left:8px;">▼</span>
+        <h2 style="margin:0;flex:1;">📜 Call History</h2>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="clear-btn" onclick="event.stopPropagation();exportHistoryPDF()" title="Export PDF">📄</button>
+          <button class="clear-btn" onclick="event.stopPropagation();clearHistory()" title="Clear">Clear</button>
+          <span class="arrow" style="margin-left:4px;">▼</span>
+        </div>
       </div>
       <div id="history-content" class="collapse-content collapsed">
-        <div class="history-list" id="historyList"><p style="color:var(--text-muted);padding:10px;">Messages appear here</p></div>
+        <div class="history-settings">
+          <label class="toggle-label">
+            <span>Auto-summarize calls</span>
+            <button class="toggle-switch" id="toggleAutoSum" onclick="toggleAutoSummarize()"></button>
+          </label>
+        </div>
+        <div class="history-list" id="historyList"><p style="color:var(--text-muted);padding:10px;">Call history appears here</p></div>
       </div>
     </div>
 
-    <div class="footer">🪷 Robin's Voice v1.0.1</div>
+    <div class="footer">🪷 Robin's Voice v1.1.0</div>
   </div>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- Recording Modal (NEW) -->
+  <div class="modal-overlay" id="recordingModal">
+    <div class="modal large">
+      <div class="modal-header">
+        <h3>🎙️ Record & Create Button</h3>
+        <button class="modal-close" onclick="closeRecordingModal()">×</button>
+      </div>
+      
+      <!-- Recording Controls -->
+      <div class="recording-section">
+        <div class="record-status" id="recordStatus">Ready to record</div>
+        <div class="record-timer" id="recordTimer">0:00</div>
+        <div class="record-controls">
+          <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+            <span class="record-icon">⏺️</span>
+            <span id="recordBtnText">Start Recording</span>
+          </button>
+        </div>
+        <div class="record-visualizer" id="recordVisualizer"></div>
+      </div>
+      
+      <!-- Transcription -->
+      <div class="transcription-section" id="transcriptionSection" style="display:none;">
+        <div class="form-group">
+          <label>Transcribed Text <span class="hint">(edit if needed)</span></label>
+          <textarea id="transcribedText" rows="3" placeholder="Your speech will appear here..."></textarea>
+        </div>
+        <button class="modal-btn" onclick="speakTranscription()">🔊 Preview</button>
+      </div>
+      
+      <!-- Save as Button -->
+      <div class="save-button-section" id="saveButtonSection" style="display:none;">
+        <div class="form-group">
+          <label>Button Name</label>
+          <input type="text" id="recordBtnName" placeholder="e.g., Doctor Greeting">
+        </div>
+        <div class="form-group">
+          <label>Description (optional)</label>
+          <input type="text" id="recordBtnDesc" placeholder="e.g., For calling Dr. Smith">
+        </div>
+        <div class="form-group">
+          <label>Icon</label>
+          <div class="icon-picker" id="recordIconPicker">
+            <div class="icon-option selected" data-icon="⭐" onclick="selectRecordIcon(this)">⭐</div>
+            <div class="icon-option" data-icon="📞" onclick="selectRecordIcon(this)">📞</div>
+            <div class="icon-option" data-icon="🏥" onclick="selectRecordIcon(this)">🏥</div>
+            <div class="icon-option" data-icon="💊" onclick="selectRecordIcon(this)">💊</div>
+            <div class="icon-option" data-icon="🚗" onclick="selectRecordIcon(this)">🚗</div>
+            <div class="icon-option" data-icon="💬" onclick="selectRecordIcon(this)">💬</div>
+            <div class="icon-option" data-icon="👋" onclick="selectRecordIcon(this)">👋</div>
+            <div class="icon-option" data-icon="❤️" onclick="selectRecordIcon(this)">❤️</div>
+            <div class="icon-option" data-icon="🎉" onclick="selectRecordIcon(this)">🎉</div>
+            <div class="icon-option" data-icon="✨" onclick="selectRecordIcon(this)">✨</div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" onclick="resetRecording()">Start Over</button>
+          <button class="modal-btn save" onclick="saveRecordedButton()">✓ Save Button</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smart Features Modal (Updated with Brain) -->
+  <div class="modal-overlay" id="smartModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🧠 Smart Features</h3>
+        <button class="modal-close" onclick="closeSmartModal()">×</button>
+      </div>
+      
+      <!-- Transcription Settings -->
+      <div class="agent-section">
+        <h4>🎙️ Live Transcription</h4>
+        <div class="agent-description">Transcribe incoming caller speech</div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-label">Enable transcription</div></div>
+          <button class="toggle-switch" id="toggleTranscribe" onclick="toggleSetting('transcribe')"></button>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-label">Show on screen</div></div>
+          <button class="toggle-switch active" id="toggleShowTranscript" onclick="toggleSetting('showTranscript')"></button>
+        </div>
+      </div>
+      
+      <!-- Auto-Record Settings -->
+      <div class="agent-section">
+        <h4>⏺️ Auto-Record Calls</h4>
+        <div class="agent-description">Automatically record important calls</div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-label">Enable auto-record</div></div>
+          <button class="toggle-switch" id="toggleAutoRecord" onclick="toggleSetting('autoRecord')"></button>
+        </div>
+        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">Record when calling:</div>
+        <div class="setting-chips">
+          <button class="setting-chip active" onclick="this.classList.toggle('active')">🏥 Doctors</button>
+          <button class="setting-chip active" onclick="this.classList.toggle('active')">💊 Pharmacy</button>
+          <button class="setting-chip" onclick="this.classList.toggle('active')">🏦 Insurance</button>
+          <button class="setting-chip" onclick="this.classList.toggle('active')">📋 Test Results</button>
+        </div>
+      </div>
+      
+      <!-- Scribe Settings -->
+      <div class="agent-section">
+        <h4>📝 Call Scribe</h4>
+        <div class="agent-description">Creates summaries after calls</div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-label">Auto-summarize</div></div>
+          <button class="toggle-switch active" id="toggleSum" onclick="toggleSetting('sum')"></button>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-label">Extract key info</div></div>
+          <button class="toggle-switch active" id="toggleExt" onclick="toggleSetting('ext')"></button>
+        </div>
+      </div>
+      
+      <!-- AI Assistant (Stubbed for later) -->
+      <div class="agent-section coming-soon">
+        <h4>🤖 AI Assistant <span class="badge">Coming Soon</span></h4>
+        <div class="agent-description">Advanced AI-powered responses and automation</div>
+        <div class="ai-assistant-preview">
+          <div class="ai-icon-preview">
+            <!-- Robot with headset icon -->
+            <svg viewBox="0 0 100 100" width="60" height="60">
+              <circle cx="50" cy="50" r="45" fill="#1a2530"/>
+              <ellipse cx="50" cy="52" rx="25" ry="28" fill="#90E0EF" opacity="0.3"/>
+              <circle cx="38" cy="45" r="5" fill="#00B4D8"/>
+              <circle cx="62" cy="45" r="5" fill="#00B4D8"/>
+              <circle cx="38" cy="45" r="2" fill="#CAF0F8"/>
+              <circle cx="62" cy="45" r="2" fill="#CAF0F8"/>
+              <path d="M35 60 Q50 70 65 60" stroke="#00B4D8" stroke-width="3" fill="none"/>
+              <path d="M20 45 Q15 35 20 25" stroke="#48CAE4" stroke-width="4" fill="none"/>
+              <path d="M80 45 Q85 35 80 25" stroke="#48CAE4" stroke-width="4" fill="none"/>
+              <ellipse cx="15" cy="45" rx="6" ry="10" fill="#0077B6"/>
+              <ellipse cx="85" cy="45" rx="6" ry="10" fill="#0077B6"/>
+              <line x1="50" y1="15" x2="50" y2="25" stroke="#48CAE4" stroke-width="2"/>
+              <circle cx="50" cy="12" r="4" fill="#00B4D8"/>
+            </svg>
+          </div>
+          <p>Smart conversation handling, context awareness, and automated responses.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice Modal -->
+  <div class="modal-overlay" id="voiceModal">
+    <div class="modal large">
+      <div class="modal-header">
+        <h3>🎤 Voice Settings</h3>
+        <button class="modal-close" onclick="closeVoiceModal()">×</button>
+      </div>
+      <div class="voice-section">
+        <h4>Robin's Voice</h4>
+        <div class="voice-grid special" id="specialVoices"></div>
+      </div>
+      <div class="voice-section">
+        <h4>All Voices</h4>
+        <div class="filter-row">
+          <button class="filter-btn active" data-filter="all" onclick="filterVoices('all',this)">All</button>
+          <button class="filter-btn" data-filter="female" onclick="filterVoices('female',this)">👩</button>
+          <button class="filter-btn" data-filter="male" onclick="filterVoices('male',this)">👨</button>
+          <button class="filter-btn" data-filter="american" onclick="filterVoices('american',this)">🇺🇸</button>
+          <button class="filter-btn" data-filter="british" onclick="filterVoices('british',this)">🇬🇧</button>
+        </div>
+        <div class="voice-grid" id="voiceGrid"></div>
+      </div>
+      <div class="test-controls">
+        <button class="modal-btn" id="testBtn" onclick="toggleTest()">🔊 Test</button>
+        <div class="speed-control">
+          <span>Speed:</span>
+          <input type="range" id="speedSlider" min="0.8" max="1.2" step="0.05" value="0.95">
+          <span id="speedValue">0.95x</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- My Info Modal -->
   <div class="modal-overlay" id="infoModal">
@@ -192,40 +378,19 @@
           </div>
           <div class="key-status" id="claudeStatus">Not set</div>
         </div>
+        <hr style="border-color:var(--border-color);margin:15px 0;">
+        <h4 style="color:var(--text-muted);font-size:0.8rem;margin-bottom:10px;">📞 Twilio (Phone Integration)</h4>
+        <div class="form-group">
+          <label>Account SID</label>
+          <input type="password" id="twilioSid" placeholder="ACxxxxxxxx...">
+        </div>
+        <div class="form-group">
+          <label>Auth Token</label>
+          <input type="password" id="twilioToken" placeholder="Auth token">
+        </div>
+        <button class="modal-btn save" onclick="saveTwilioKeys()" style="margin-top:10px;">Save Twilio Keys</button>
+        <div class="key-status" id="twilioStatus">Not set</div>
         <p style="margin-top:15px;font-size:0.7rem;color:var(--text-muted);">Keys stored locally in your browser only.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Voice Modal -->
-  <div class="modal-overlay" id="voiceModal">
-    <div class="modal large">
-      <div class="modal-header">
-        <h3>🎤 Voice Settings</h3>
-        <button class="modal-close" onclick="closeVoiceModal()">×</button>
-      </div>
-      <div class="voice-section">
-        <h4>Robin's Voice</h4>
-        <div class="voice-grid special" id="specialVoices"></div>
-      </div>
-      <div class="voice-section">
-        <h4>All Voices</h4>
-        <div class="filter-row">
-          <button class="filter-btn active" data-filter="all" onclick="filterVoices('all',this)">All</button>
-          <button class="filter-btn" data-filter="female" onclick="filterVoices('female',this)">👩</button>
-          <button class="filter-btn" data-filter="male" onclick="filterVoices('male',this)">👨</button>
-          <button class="filter-btn" data-filter="american" onclick="filterVoices('american',this)">🇺🇸</button>
-          <button class="filter-btn" data-filter="british" onclick="filterVoices('british',this)">🇬🇧</button>
-        </div>
-        <div class="voice-grid" id="voiceGrid"></div>
-      </div>
-      <div class="test-controls">
-        <button class="modal-btn" id="testBtn" onclick="toggleTest()">🔊 Test</button>
-        <div class="speed-control">
-          <span>Speed:</span>
-          <input type="range" id="speedSlider" min="0.8" max="1.2" step="0.05" value="0.95">
-          <span id="speedValue">0.95x</span>
-        </div>
       </div>
     </div>
   </div>
@@ -259,35 +424,6 @@
         <div class="modal-actions">
           <button class="modal-btn cancel" onclick="showBrowseScripts()">Cancel</button>
           <button class="modal-btn save" onclick="saveFullScript()">✓ Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Agents Modal -->
-  <div class="modal-overlay" id="agentsModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>🤖 Smart Features</h3>
-        <button class="modal-close" onclick="closeAgentsModal()">×</button>
-      </div>
-      <div class="agent-section">
-        <h4>📝 Scribe</h4>
-        <div class="agent-description">Creates summaries after calls</div>
-        <div class="setting-row"><div class="setting-info"><div class="setting-label">Auto-summarize</div></div><button class="toggle-switch active" id="toggleSum" onclick="toggleSetting('sum')"></button></div>
-        <div class="setting-row"><div class="setting-info"><div class="setting-label">Extract key info</div></div><button class="toggle-switch active" id="toggleExt" onclick="toggleSetting('ext')"></button></div>
-      </div>
-      <div class="agent-section">
-        <h4>🗣️ Smart Response</h4>
-        <div class="agent-description">Auto-answers common questions</div>
-        <div class="setting-row"><div class="setting-info"><div class="setting-label">Enable</div></div><button class="toggle-switch active" id="toggleAuto" onclick="toggleSetting('auto')"></button></div>
-        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">Auto-answer:</div>
-        <div class="setting-chips">
-          <button class="setting-chip active" onclick="this.classList.toggle('active')">🎂 DOB</button>
-          <button class="setting-chip active" onclick="this.classList.toggle('active')">📱 Phone</button>
-          <button class="setting-chip active" onclick="this.classList.toggle('active')">📍 Address</button>
-          <button class="setting-chip active" onclick="this.classList.toggle('active')">🏥 Insurance</button>
-          <button class="setting-chip active" onclick="this.classList.toggle('active')">💊 Pharmacy</button>
         </div>
       </div>
     </div>
@@ -388,5 +524,6 @@
   <script src="src/js/ui.js"></script>
   <script src="src/js/scripts.js"></script>
   <script src="src/js/data.js"></script>
+  <script src="src/js/recording.js"></script>
 </body>
 </html>

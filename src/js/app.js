@@ -1,4 +1,4 @@
-// Robin's Voice v1.0.1 - Voice Assistant
+// Robin's Voice v1.1.0 - Voice Assistant
 // App State & Initialization
 
 // ============================================
@@ -6,12 +6,12 @@
 // ============================================
 const ROBIN_ELEVENLABS_KEY = 'sk_0d7f63b1b650bfad8872e15532508b0e7c54877bafd24086';
 
-// Twilio (for future phone integration)
+// Twilio loaded from localStorage (enter via Info → API tab)
 const TWILIO_CONFIG = {
-  accountSid: 'fb2007b25ded0005fcbcc00c985911ed61779a315bd7a2d10132811ab8f1f531',
-  authToken: '75e0173b3ab6a207058f115833f8e52d16e55607881592867f4e031cc71ee9c3',
-  testSid: '11fad3577f4a082a373553ccd1a4b0ef183021884b495c34a9588f14cde8c245',
-  testAuthToken: '56655e6d3f1248f8ed59c8d73ce949e4c6ce651c6c3af4c369078bbab79eb46f'
+  accountSid: localStorage.getItem('robinTwilioSid') || '',
+  authToken: localStorage.getItem('robinTwilioToken') || '',
+  testSid: localStorage.getItem('robinTwilioTestSid') || '',
+  testAuthToken: localStorage.getItem('robinTwilioTestToken') || ''
 };
 
 // ============================================
@@ -47,6 +47,20 @@ const state = {
     custom: []
   })),
   currentCat: 'doctor',
+  
+  // Recording State
+  lastRecordedAudio: null,
+  autoSummarize: localStorage.getItem('robinAutoSummarize') === 'true',
+  
+  // Smart Features State
+  smartSettings: JSON.parse(localStorage.getItem('robinSmartSettings') || JSON.stringify({
+    transcribe: false,
+    showTranscript: true,
+    autoRecord: false,
+    autoRecordTriggers: ['doctors', 'pharmacy'],
+    autoSummarize: true,
+    extractKeyInfo: true
+  })),
   
   // UI State
   selectedIcon: '⭐',

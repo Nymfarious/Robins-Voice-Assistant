@@ -1,4 +1,4 @@
-// Robin v6.2.1 - UI Functions
+// Robin's Voice v1.1.0 - UI Functions
 
 // ============================================
 // COLLAPSE
@@ -20,9 +20,9 @@ function showTab(tab, btn) {
 }
 
 function showInfoTab(tab, btn) {
-  document.querySelectorAll('[id^="infoTab-"]').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.info-tab-content').forEach(x => x.classList.remove('active'));
   document.querySelectorAll('#infoModal .modal-tab').forEach(x => x.classList.remove('active'));
-  document.getElementById('infoTab-' + tab).classList.add('active');
+  document.getElementById('info-' + tab).classList.add('active');
   btn.classList.add('active');
 }
 
@@ -30,61 +30,70 @@ function showInfoTab(tab, btn) {
 // MODALS
 // ============================================
 function openInfoModal() {
-  document.getElementById('infoModal').classList.add('show');
+  document.getElementById('infoModal').classList.add('active');
   loadInfoFields();
 }
 
 function closeInfoModal() {
-  document.getElementById('infoModal').classList.remove('show');
+  document.getElementById('infoModal').classList.remove('active');
   autoSaveInfo();
 }
 
 function openVoiceModal() {
-  document.getElementById('voiceModal').classList.add('show');
+  document.getElementById('voiceModal').classList.add('active');
   if (state.apiKey && !state.allVoices.length) loadVoices();
 }
 
 function closeVoiceModal() {
-  document.getElementById('voiceModal').classList.remove('show');
+  document.getElementById('voiceModal').classList.remove('active');
 }
 
 function openFullScriptsModal() {
-  document.getElementById('fullScriptsModal').classList.add('show');
-  showScriptCategory('doctor', document.querySelector('.script-tab'));
+  document.getElementById('fullScriptsModal').classList.add('active');
+  renderFullScripts();
 }
 
 function closeFullScriptsModal() {
-  document.getElementById('fullScriptsModal').classList.remove('show');
+  document.getElementById('fullScriptsModal').classList.remove('active');
 }
 
 function openAgentsModal() {
-  document.getElementById('agentsModal').classList.add('show');
+  // Legacy - redirect to smart modal
+  openSmartModal();
 }
 
 function closeAgentsModal() {
-  document.getElementById('agentsModal').classList.remove('show');
+  closeSmartModal();
 }
 
 function openMyScriptModal() {
-  document.getElementById('myScriptModal').classList.add('show');
+  document.getElementById('myScriptModal').classList.add('active');
   document.getElementById('myScriptName').value = '';
   document.getElementById('myScriptText').value = '';
   state.selectedIcon = '⭐';
-  document.querySelectorAll('.icon-option').forEach(i => {
+  document.querySelectorAll('#iconPicker .icon-option').forEach(i => {
     i.classList.toggle('selected', i.dataset.icon === '⭐');
   });
 }
 
 function closeMyScriptModal() {
-  document.getElementById('myScriptModal').classList.remove('show');
+  document.getElementById('myScriptModal').classList.remove('active');
+}
+
+function openAddInsuranceModal() {
+  document.getElementById('addInsuranceModal').classList.add('active');
 }
 
 function closeAddInsuranceModal() {
-  document.getElementById('addInsuranceModal').classList.remove('show');
+  document.getElementById('addInsuranceModal').classList.remove('active');
+}
+
+function openAddPharmacyModal() {
+  document.getElementById('addPharmacyModal').classList.add('active');
 }
 
 function closeAddPharmacyModal() {
-  document.getElementById('addPharmacyModal').classList.remove('show');
+  document.getElementById('addPharmacyModal').classList.remove('active');
 }
 
 // ============================================
@@ -95,7 +104,7 @@ function editIntroBtn() {
   document.getElementById('editBtnTitle').textContent = 'Edit Intro';
   document.getElementById('editBtnLabel').value = state.introLabel;
   document.getElementById('editBtnText').value = state.introText;
-  document.getElementById('editBtnModal').classList.add('show');
+  document.getElementById('editBtnModal').classList.add('active');
 }
 
 function editVerifyBtn() {
@@ -103,11 +112,11 @@ function editVerifyBtn() {
   document.getElementById('editBtnTitle').textContent = 'Edit Verify';
   document.getElementById('editBtnLabel').value = state.verifyLabel;
   document.getElementById('editBtnText').value = state.verifyText;
-  document.getElementById('editBtnModal').classList.add('show');
+  document.getElementById('editBtnModal').classList.add('active');
 }
 
 function closeEditBtnModal() {
-  document.getElementById('editBtnModal').classList.remove('show');
+  document.getElementById('editBtnModal').classList.remove('active');
 }
 
 function saveEditBtn() {

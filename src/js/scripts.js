@@ -1,16 +1,20 @@
-// Robin v6.2.1 - Scripts & History
+// Robin's Voice v1.1.0 - Scripts & History
 
 // ============================================
 // HISTORY
 // ============================================
-function addHistory(text) {
+function addHistory(text, metadata = {}) {
   state.history.unshift({
     text: text.slice(0, 50) + (text.length > 50 ? '...' : ''),
     full: text,
-    time: new Date().toLocaleTimeString()
+    time: new Date().toLocaleTimeString(),
+    date: new Date().toLocaleDateString(),
+    callerId: metadata.callerId || null,
+    duration: metadata.duration || null,
+    summary: metadata.summary || null
   });
   
-  if (state.history.length > 20) state.history.pop();
+  if (state.history.length > 50) state.history.pop();
   localStorage.setItem('robinHistory', JSON.stringify(state.history));
   renderHistory();
 }
@@ -18,19 +22,34 @@ function addHistory(text) {
 function renderHistory() {
   const list = document.getElementById('historyList');
   
-  list.innerHTML = state.history.length 
-    ? state.history.map((h, i) => 
-        `<div class="history-item" onclick="document.getElementById('customText').value=state.history[${i}].full">
-          <span class="time">${h.time}</span> ${h.text}
-        </div>`
-      ).join('')
-    : '<p style="color:var(--text-muted);padding:10px;">Messages appear here</p>';
+  if (!state.history.length) {
+    list.innerHTML = '<p style="color:var(--text-muted);padding:10px;">Call history appears here</p>';
+    return;
+  }
+  
+  list.innerHTML = state.history.map((h, i) => `
+    <div class="history-item${h.callerId ? ' enhanced' : ''}" onclick="document.getElementById('customText').value=state.history[${i}].full">
+      ${h.callerId ? `
+        <div class="history-header">
+          <span class="history-caller">${h.callerId}</span>
+          <span class="history-time">${h.time}</span>
+        </div>
+        <div class="history-text">${h.text}</div>
+        ${h.duration ? `<div class="history-duration">⏱️ ${h.duration}</div>` : ''}
+        ${h.summary ? `<div class="history-summary">📝 ${h.summary}</div>` : ''}
+      ` : `
+        <span class="time">${h.time}</span> ${h.text}
+      `}
+    </div>
+  `).join('');
 }
 
 function clearHistory() {
-  state.history = [];
-  localStorage.removeItem('robinHistory');
-  renderHistory();
+  if (confirm('Clear all history?')) {
+    state.history = [];
+    localStorage.removeItem('robinHistory');
+    renderHistory();
+  }
 }
 
 // ============================================
@@ -98,16 +117,18 @@ function deleteMyScript(id) {
 // ============================================
 // FULL SCRIPTS
 // ============================================
-function showScriptCategory(cat, btn) {
+function showScriptsCat(cat, btn) {
   state.currentCat = cat;
-  document.querySelectorAll('.script-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.script-tabs .modal-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   renderFullScripts();
 }
 
 function renderFullScripts() {
   const list = state.fullScripts[state.currentCat] || [];
-  const container = document.getElementById('scriptList');
+  const container = document.getElementById('fullScriptsList');
+  
+  if (!container) return;
   
   container.innerHTML = list.length 
     ? list.map(s => 
@@ -122,7 +143,7 @@ function renderFullScripts() {
           <div class="script-item-text">${replacePlaceholders(s.text)}</div>
         </div>`
       ).join('')
-    : '<div class="loading-msg">No scripts</div>';
+    : '<div class="loading-msg">No scripts in this category</div>';
 }
 
 function speakFullScript(id) {
@@ -136,17 +157,21 @@ function deleteFullScript(id) {
   renderFullScripts();
 }
 
-function showCreateScriptView() {
-  document.getElementById('browseScriptsView').style.display = 'none';
-  document.getElementById('createScriptView').classList.add('active');
+function showCreateScript() {
+  document.getElementById('scriptsView').style.display = 'none';
+  document.getElementById('scriptsCreate').style.display = 'block';
 }
 
-function hideCreateScriptView() {
-  document.getElementById('browseScriptsView').style.display = 'block';
-  document.getElementById('createScriptView').classList.remove('active');
+function showBrowseScripts() {
+  document.getElementById('scriptsView').style.display = 'block';
+  document.getElementById('scriptsCreate').style.display = 'none';
+  // Clear form
+  document.getElementById('scriptDescribe').value = '';
+  document.getElementById('scriptTextarea').value = '';
+  document.getElementById('scriptName').value = '';
 }
 
-async function generateScriptAI() {
+async function generateScript() {
   const desc = document.getElementById('scriptDescribe').value.trim();
   
   if (!desc) {
@@ -155,11 +180,11 @@ async function generateScriptAI() {
   }
   
   if (!state.claudeKey) {
-    alert('Add Claude key');
+    alert('Add Claude API key in Info → API tab');
     return;
   }
   
-  document.getElementById('generatedScript').value = 'Generating...';
+  document.getElementById('scriptTextarea').value = 'Generating...';
   
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -174,26 +199,26 @@ async function generateScriptAI() {
         max_tokens: 500,
         messages: [{
           role: 'user',
-          content: `Write a phone script. Need: ${desc}\n\nStart with "Hello, I'm Robin calling on behalf of [FIRST] [LAST]." Use [FIRST], [LAST], [FULL_NAME], [DOB], [ADDRESS], [INSURANCE], [PHARMACY]. Keep concise.`
+          content: `Write a phone script for Robin who uses a voice assistant to communicate. Need: ${desc}\n\nStart with "Hi, this is Robin." Use placeholders: [FIRST], [LAST], [FULL_NAME], [DOB], [ADDRESS], [INSURANCE], [PHARMACY]. Keep it natural and concise.`
         }]
       })
     });
     
     const data = await response.json();
-    document.getElementById('generatedScript').value = data.content[0].text;
+    document.getElementById('scriptTextarea').value = data.content[0].text;
     
   } catch (e) {
-    document.getElementById('generatedScript').value = 'Error: ' + e.message;
+    document.getElementById('scriptTextarea').value = 'Error: ' + e.message;
   }
 }
 
 function saveFullScript() {
-  const name = document.getElementById('newScriptName').value.trim();
-  const text = document.getElementById('generatedScript').value.trim();
-  const cat = document.getElementById('newScriptCat').value;
+  const name = document.getElementById('scriptName').value.trim();
+  const text = document.getElementById('scriptTextarea').value.trim();
+  const cat = document.getElementById('scriptCat').value;
   
   if (!name || !text) {
-    alert('Fill name and text');
+    alert('Fill name and script text');
     return;
   }
   
@@ -204,6 +229,9 @@ function saveFullScript() {
   });
   
   localStorage.setItem('robinFullScripts', JSON.stringify(state.fullScripts));
-  hideCreateScriptView();
+  showBrowseScripts();
+  
+  // Switch to the category we just added to
+  state.currentCat = cat;
   renderFullScripts();
 }
