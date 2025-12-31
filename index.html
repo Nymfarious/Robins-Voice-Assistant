@@ -22,14 +22,14 @@
     <header>
       <h1><div class="lotus-icon">🪷</div> Robin's Voice</h1>
       <p id="headerSubtitle">Your Voice Assistant</p>
-      <div class="version">v1.0.0</div>
+      <div class="version">v1.0.1</div>
     </header>
 
     <!-- Type Anything Card -->
     <div class="card">
       <h2>💬 Type Anything</h2>
       <div class="custom-row">
-        <input type="text" class="custom-input" id="customText" placeholder="Type what to say..." autocomplete="off">
+        <input type="text" class="custom-input" id="customText" placeholder="Type what to say..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other">
         <button class="send-btn" onclick="speakCustom()" title="Speak the typed text">SPEAK</button>
       </div>
       <div class="status-bar">
@@ -130,7 +130,7 @@
       </div>
     </div>
 
-    <div class="footer">🪷 Robin's Voice v1.0.0</div>
+    <div class="footer">🪷 Robin's Voice v1.0.1</div>
   </div>
 
   <!-- ==================== MODALS ==================== -->
