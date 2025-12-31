@@ -21,14 +21,17 @@
     <header>
       <h1><div class="lotus-icon">🪷</div> Robin's Voice</h1>
       <p id="headerSubtitle">Your Voice Assistant</p>
-      <div class="version">v1.1.0</div>
+      <div class="version">v1.1.1</div>
     </header>
 
     <!-- Type Anything Card -->
     <div class="card">
       <h2>💬 Type Anything</h2>
+      <!-- Hidden honeypot to trick password managers -->
+      <input type="text" name="fakeuser" style="display:none;" tabindex="-1" autocomplete="username">
+      <input type="password" name="fakepass" style="display:none;" tabindex="-1" autocomplete="current-password">
       <div class="custom-row">
-        <input type="text" class="custom-input" id="customText" placeholder="Type what to say..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other">
+        <input type="text" class="custom-input" id="customText" name="speechInput" placeholder="Type what to say..." autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" aria-autocomplete="none">
         <button class="send-btn" onclick="speakCustom()" title="Speak the typed text">SPEAK</button>
       </div>
       <div class="status-bar">
@@ -138,7 +141,7 @@
       </div>
     </div>
 
-    <div class="footer">🪷 Robin's Voice v1.1.0</div>
+    <div class="footer">🪷 Robin's Voice v1.1.1</div>
   </div>
 
   <!-- ==================== MODALS ==================== -->
