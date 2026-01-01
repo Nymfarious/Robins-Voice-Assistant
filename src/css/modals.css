@@ -1,4 +1,4 @@
-/* Robin's Voice v1.1.0 - Modal Styles */
+/* Robin's Voice v1.4.2 - Modal Styles */
 
 /* Modal Overlay */
 .modal-overlay {
@@ -320,3 +320,89 @@
   color: var(--text-muted);
   font-size: 0.85rem;
 }
+
+/* ============================================
+   VOICE MODAL STYLES
+   ============================================ */
+.section-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin: 12px 0 8px; }
+.voice-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.voice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 200px; overflow-y: auto; }
+.voice-card { padding: 8px 6px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; text-align: center; }
+.voice-card.selected { border-color: var(--accent-primary); background: rgba(0, 180, 216, 0.15); }
+.voice-card .voice-name { font-size: 0.7rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.voice-card .voice-meta { font-size: 0.6rem; color: var(--text-muted); margin-top: 2px; }
+.special-voice { padding: 10px; background: rgba(0, 180, 216, 0.15); border: 2px solid var(--accent-primary); border-radius: 10px; cursor: pointer; text-align: center; margin-bottom: 8px; }
+.special-voice.selected { background: rgba(0, 180, 216, 0.25); }
+.special-voice .voice-name { font-weight: 700; font-size: 0.85rem; }
+.special-voice .voice-meta { font-size: 0.7rem; color: var(--accent-primary); margin-top: 2px; }
+.voice-count { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
+.voice-controls { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.test-btn { padding: 10px 16px; background: linear-gradient(135deg, var(--accent-primary), var(--deep-blue)); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; }
+.test-btn.stop-mode { background: var(--error); }
+.test-btn:disabled { opacity: 0.4; }
+
+/* ============================================
+   SCRIPTS MODAL STYLES
+   ============================================ */
+.script-tabs { display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap; }
+.script-tab { padding: 8px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; }
+.script-tab.active { background: var(--accent-primary); color: white; }
+.script-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.script-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.script-item-title { font-weight: 600; color: var(--accent-secondary); font-size: 0.85rem; }
+.script-item-btn { width: 30px; height: 30px; background: var(--bg-input); border: none; border-radius: 6px; color: var(--text-secondary); cursor: pointer; margin-left: 4px; }
+.script-item-btn:hover { color: var(--accent-primary); }
+.script-item-text { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+.add-custom-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--accent-primary), var(--deep-blue)); border: none; border-radius: 10px; color: white; font-weight: 600; cursor: pointer; margin-top: 10px; }
+.create-script-section { display: none; }
+.create-script-section.active { display: block; }
+.ai-generate-btn { padding: 10px 14px; background: var(--bg-secondary); border: 1px solid var(--border-accent); border-radius: 8px; color: var(--accent-secondary); font-size: 0.8rem; cursor: pointer; margin-bottom: 12px; }
+
+/* ============================================
+   AGENT/SMART MODAL STYLES
+   ============================================ */
+.agent-section { margin-bottom: 18px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 10px; }
+.agent-section h4 { font-size: 0.85rem; color: var(--accent-secondary); margin-bottom: 10px; }
+.agent-description { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+.setting-info { flex: 1; }
+.setting-label { font-size: 0.85rem; color: var(--text-secondary); }
+.setting-desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+.toggle-switch { width: 48px; height: 26px; background: var(--bg-input); border-radius: 13px; position: relative; cursor: pointer; border: none; }
+.toggle-switch.active { background: var(--accent-primary); }
+.toggle-switch::after { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: left 0.3s; }
+.toggle-switch.active::after { left: 25px; }
+.setting-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.setting-chip { padding: 6px 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; font-size: 0.75rem; color: var(--text-muted); cursor: pointer; }
+.setting-chip.active { background: rgba(0, 180, 216, 0.15); border-color: var(--accent-primary); color: var(--accent-primary); }
+.coming-soon { opacity: 0.6; }
+.badge { display: inline-block; padding: 2px 8px; background: var(--accent-warm); color: var(--bg-primary); font-size: 0.6rem; font-weight: 600; border-radius: 10px; margin-left: 6px; }
+
+/* Modal Large */
+.modal.large { max-width: 500px; }
+
+/* ============================================
+   VOICE FILTER BAR & VERTICAL SCROLL
+   ============================================ */
+.voice-filter-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.filter-label { font-size: 0.75rem; color: var(--text-muted); margin-right: 4px; }
+.filter-btn { padding: 6px 10px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; min-width: 36px; text-align: center; }
+.filter-btn:hover { border-color: var(--accent-primary); }
+.filter-btn.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+
+.voice-scroll-area { max-height: 250px; overflow-y: auto; overflow-x: hidden; margin-bottom: 12px; padding-right: 4px; }
+
+.voice-grid-vertical { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+
+.voice-tip { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 8px; }
+
+.test-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.modal-btn.test { background: linear-gradient(135deg, var(--accent-primary), var(--deep-blue)); }
+
+/* ============================================
+   REGION TABS (deprecated, using filter-btn now)
+   ============================================ */
+.region-tabs { display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+.region-tab { padding: 8px 12px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); font-size: 0.9rem; cursor: pointer; transition: all 0.2s; min-width: 40px; text-align: center; }
+.region-tab:hover { border-color: var(--accent-primary); }
+.region-tab.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }

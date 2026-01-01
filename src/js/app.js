@@ -1,4 +1,4 @@
-// Robin's Voice v1.1.0 - Voice Assistant
+// Robin's Voice v1.4.2 - Voice Assistant
 // App State & Initialization
 
 // ============================================
@@ -74,34 +74,70 @@ const state = {
 };
 
 // ============================================
-// LAUGH EXPRESSIONS
+// LAUGH SOUNDS
 // ============================================
-// Placeholder for laugh audio clips
-// These would be pre-recorded clips of Robin's laugh
+// Audio clips for laugh buttons - can be loaded from uploads or IndexedDB
 const laughSounds = {
   chuckle: null,  // Light chuckle audio
-  laugh: null,    // Full laugh audio
-  giggle: null    // Amused giggle audio
+  laugh: null,    // Full hearty laugh
+  sarcastic: null // Dry "ha ha" audio
 };
 
 function playLaugh(type) {
-  // For now, use TTS to approximate a laugh
-  // Later: Replace with actual recorded clips of Robin's laugh
+  // Check if we have a recorded audio clip
+  if (laughSounds[type] && laughSounds[type] instanceof Blob) {
+    const audio = new Audio(URL.createObjectURL(laughSounds[type]));
+    audio.volume = getAudioVolume();
+    audio.play();
+    return;
+  }
+  
+  // Fall back to TTS with laugh phrases
   const laughPhrases = {
-    chuckle: "Ha ha.",
+    chuckle: "Heh heh heh.",
     laugh: "Ha ha ha ha!",
-    giggle: "Hee hee."
+    sarcastic: "Ha. Ha. Ha."
   };
   
-  const phrase = laughPhrases[type] || laughPhrases.chuckle;
-  
-  // Check if we have a recorded audio clip
-  if (laughSounds[type]) {
-    laughSounds[type].play();
-  } else {
-    // Fall back to TTS
-    speak(phrase, false);
-  }
+  speak(laughPhrases[type] || laughPhrases.chuckle, false);
+}
+
+// Load laugh audio from localStorage
+function loadLaughSounds() {
+  ['chuckle', 'laugh', 'sarcastic'].forEach(type => {
+    const stored = localStorage.getItem('robinLaugh_' + type);
+    if (stored) {
+      try {
+        const binary = atob(stored);
+        const array = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          array[i] = binary.charCodeAt(i);
+        }
+        laughSounds[type] = new Blob([array], { type: 'audio/webm' });
+      } catch (e) {
+        console.log('Error loading laugh sound:', type, e);
+      }
+    }
+  });
+}
+
+// Save laugh audio to localStorage
+function saveLaughSound(type, blob) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = reader.result.split(',')[1];
+    localStorage.setItem('robinLaugh_' + type, base64);
+    laughSounds[type] = blob;
+  };
+  reader.readAsDataURL(blob);
+}
+
+// Get audio volume from settings
+function getAudioVolume() {
+  const settings = JSON.parse(localStorage.getItem('robinAudioSettings') || '{}');
+  const vol = (settings.speakerVolume || 80) / 100;
+  const boost = settings.boostVolume ? 1.2 : 1;
+  return Math.min(1, vol * boost);
 }
 
 // ============================================
@@ -117,6 +153,7 @@ function init() {
   loadInfoFields();
   updateHeaderName();
   updateBtnLabels();
+  loadLaughSounds();
   
   // API Key Status - Robin's key is pre-loaded!
   if (state.apiKey) {

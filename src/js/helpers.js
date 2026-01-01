@@ -1,4 +1,4 @@
-// Robin's Voice v1.1.0 - User Info Helpers
+// Robin's Voice v1.4.2 - User Info Helpers
 
 // ============================================
 // NAME HELPERS
@@ -75,25 +75,25 @@ function updateBtnLabels() {
 // LOAD/SAVE INFO
 // ============================================
 function loadInfoFields() {
-  document.getElementById('firstName').value = state.info.firstName || '';
-  document.getElementById('lastName').value = state.info.lastName || '';
-  document.getElementById('nickname').value = state.info.nickname || '';
-  document.getElementById('pronounceFirst').value = state.info.pronounceFirst || '';
-  document.getElementById('pronounceLast').value = state.info.pronounceLast || '';
-  document.getElementById('dob').value = state.info.dob || '';
-  document.getElementById('phone').value = state.info.phone || '';
-  document.getElementById('address1').value = state.info.address1 || '';
-  document.getElementById('address2').value = state.info.address2 || '';
-  document.getElementById('city').value = state.info.city || '';
-  document.getElementById('state').value = state.info.state || '';
-  document.getElementById('zip').value = state.info.zip || '';
+  // Basic info fields
+  const fields = ['firstName', 'lastName', 'nickname', 'pronounceFirst', 'pronounceLast', 
+                  'dob', 'phone', 'address1', 'address2', 'city', 'state', 'zip'];
   
-  // Load Twilio status
-  if (localStorage.getItem('robinTwilioSid')) {
-    document.getElementById('twilioSid').value = '••••••••';
-    document.getElementById('twilioToken').value = '••••••••';
-    document.getElementById('twilioStatus').textContent = '✓ Saved';
-    document.getElementById('twilioStatus').className = 'key-status saved';
+  fields.forEach(field => {
+    const el = document.getElementById(field);
+    if (el) el.value = state.info[field] || '';
+  });
+  
+  // Load Twilio status (with safety check)
+  const twilioSidEl = document.getElementById('twilioSid');
+  const twilioTokenEl = document.getElementById('twilioToken');
+  const twilioStatusEl = document.getElementById('twilioStatus');
+  
+  if (twilioSidEl && twilioStatusEl && localStorage.getItem('robinTwilioSid')) {
+    twilioSidEl.value = '••••••••';
+    if (twilioTokenEl) twilioTokenEl.value = '••••••••';
+    twilioStatusEl.textContent = '✓ Saved';
+    twilioStatusEl.className = 'key-status saved';
   }
 }
 
@@ -153,18 +153,25 @@ function saveClaudeKey() {
 function saveTwilioKeys() {
   const sid = document.getElementById('twilioSid').value.trim();
   const token = document.getElementById('twilioToken').value.trim();
+  let saved = false;
   
   if (sid && !sid.includes('•')) {
     localStorage.setItem('robinTwilioSid', sid);
     TWILIO_CONFIG.accountSid = sid;
+    document.getElementById('twilioSid').value = '••••••••';
+    saved = true;
   }
   if (token && !token.includes('•')) {
     localStorage.setItem('robinTwilioToken', token);
     TWILIO_CONFIG.authToken = token;
+    document.getElementById('twilioToken').value = '••••••••';
+    saved = true;
   }
   
-  document.getElementById('twilioSid').value = '••••••••';
-  document.getElementById('twilioToken').value = '••••••••';
-  document.getElementById('twilioStatus').textContent = '✓ Saved';
-  document.getElementById('twilioStatus').className = 'key-status saved';
+  if (saved) {
+    document.getElementById('twilioStatus').textContent = '✓ Saved';
+    document.getElementById('twilioStatus').className = 'key-status saved';
+  } else {
+    document.getElementById('twilioStatus').textContent = 'Enter keys first';
+  }
 }
